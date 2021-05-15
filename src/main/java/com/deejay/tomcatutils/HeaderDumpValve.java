@@ -9,6 +9,12 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+Tomcat Header Dump Valve
+
+
+ */
+
 public class HeaderDumpValve extends ValveBase {
     private static final Logger logger = Logger.getLogger(HeaderDumpValve.class.getName());
 
