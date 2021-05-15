@@ -9,6 +9,21 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/*
+*******   HeaderDumpValve is a Tomcat Valve implementation, extending the ValveBase class.   *****
+*******   dennis.jacob@gmail.com   ******
+
+This Valve acts as another Valve in the Tomcat container Pipeline, intercepting the requests and dumps the headers to the standard out.
+Instead of using the Logger, you can also use containerLog object.
+
+Valve to be configured in the server.xml is given below
+
+<Valve className="com.deejay.tomcatutils.HeaderDumpValve" enabled="true" />
+
+ */
+
+
+
 public class HeaderDumpValve extends ValveBase {
 
     private static final Logger logger = Logger.getLogger(HeaderDumpValve.class.getName());
@@ -35,6 +50,7 @@ public class HeaderDumpValve extends ValveBase {
         logger.log(Level.INFO, "Request received : " + request.getDecodedRequestURI());
 
         Enumeration<String> headerNames = request.getHeaderNames();
+
 
         if (enabled.equals("true")) {
             while (headerNames.hasMoreElements()) {
