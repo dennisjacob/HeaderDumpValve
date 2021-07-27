@@ -5,20 +5,21 @@ import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /*
-*******   HeaderDumpValve is a Tomcat Valve implementation, extending the ValveBase class.   *****
-*******   dennis.jacob@gmail.com   ******
+*   HeaderDumpValve is a Tomcat Valve implementation, extending the ValveBase class.   *
+*   dennis.jacob@gmail.com   *
 
 This Valve acts as another Valve in the Tomcat container Pipeline, intercepting the requests and dumps the headers to the standard out.
 Instead of using the Logger, you can also use containerLog object.
 
+*  Configuration:
 Valve to be configured in the server.xml is given below
-
-<Valve className="com.deejay.tomcatutils.HeaderDumpValve" enabled="true" />
+      <Valve className="com.deejay.tomcatutils.HeaderDumpValve" enabled="true" />
 
  */
 
@@ -27,7 +28,6 @@ Valve to be configured in the server.xml is given below
 public class HeaderDumpValve extends ValveBase {
 
     private static final Logger logger = Logger.getLogger(HeaderDumpValve.class.getName());
-
     private String enabled;
 
     public HeaderDumpValve() {
@@ -44,7 +44,6 @@ public class HeaderDumpValve extends ValveBase {
     }
 
 
-
     public void invoke(Request request, Response response) throws IOException, ServletException {
 
         logger.log(Level.INFO, "Request received : " + request.getDecodedRequestURI());
@@ -55,11 +54,21 @@ public class HeaderDumpValve extends ValveBase {
         if (enabled.equals("true")) {
             while (headerNames.hasMoreElements()) {
                 String header = headerNames.nextElement();
-                logger.log(Level.INFO, " [ " + header + " : " + request.getHeader(header) + " ] ");
+                logger.log(Level.INFO, "Request Header -  [ " + header + " : " + request.getHeader(header) + " ] ");
             }
         }
         getNext().invoke(request, response);
-        logger.log(Level.INFO, "Request processed" );
+
+
+        if (enabled.equals("true")) {
+            // System.out.println(response.getHeaderNames());
+            Collection<String> respHeaders = response.getHeaderNames();
+            for (String respHeader : respHeaders) {
+                logger.log(Level.INFO, "Response Header - [ " + respHeader + " : " + response.getHeader(respHeader) + " ] ");
+            }
+        }
+
+        logger.log(Level.INFO, "Request processed : " + request.getDecodedRequestURI() );
     }
 
 }
